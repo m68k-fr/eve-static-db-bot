@@ -1,0 +1,29 @@
+{
+  "name": "eve-bot",
+  "version": "0.1.0",
+  "description": "A simple Discord bot for EVE Online",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m68k-fr/eve-bot.git"
+  },
+  "keywords": [
+    "Discord",
+    "EVE",
+    "Online"
+  ],
+  "author": "m68k",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/m68k-fr/eve-bot/issues"
+  },
+  "homepage": "https://github.com/m68k-fr/eve-bot#readme",
+  "devDependencies": {
+    "discord.js": "^11.4.2",
+    "winston": "^3.1.0",
+    "winston-daily-rotate-file": "^3.4.1"
+  }
+}

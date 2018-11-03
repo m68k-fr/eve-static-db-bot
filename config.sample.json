@@ -1,0 +1,5 @@
+{
+	"token": "your_discord_bot_token",
+	"prefix": "/",
+	"bot_default_permission" : 337984
+}

@@ -59,3 +59,10 @@ typings/
 
 # next.js build output
 .next
+
+# phpstorm
+.idea
+
+# eve-bot specific
+
+config.json
