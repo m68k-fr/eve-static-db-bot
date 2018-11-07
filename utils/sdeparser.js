@@ -4,6 +4,11 @@ const striptags = require('striptags');
 
 const ships = [];
 
+
+exports.getShips = function () {
+    return ships;
+};
+
 exports.parse = function () {
 
 
@@ -13,9 +18,14 @@ exports.parse = function () {
     const categoryIdPath = sdePath + 'fsd/categoryIDs.yaml';
     const chrRacePath = sdePath + 'bsd/chrRaces.yaml';
 
+    const eveUnitPath = sdePath + 'bsd/eveUnits.yaml';
+    const dgmAttributeTypePath = sdePath + 'bsd/dgmAttributeTypes.yaml';
+    const dgmTypeAttributePath = sdePath + 'bsd/dgmTypeAttributes.yaml';
+
+    const iconIDPath = sdePath + 'fsd/iconIDs.yaml';
+
 
     const blueprintsPath = sdePath + 'fsd/blueprints.yaml';
-
     try {
 
         // import blueprints
@@ -35,14 +45,37 @@ exports.parse = function () {
             }
         }*/
 
+        //
 
-        // Races
+
+        // Load Icons
+
+        const iconIDs = yaml.safeLoad(fs.readFileSync(iconIDPath, 'utf8'));
+
+
+        // Load Races
 
         const chrRaces = yaml.safeLoad(fs.readFileSync(chrRacePath, 'utf8'));
         let races = [];
         for (var currRace in chrRaces) {
             races[chrRaces[currRace].raceID] = chrRaces[currRace];
         }
+
+        // Load Item Attributes
+
+        const eveUnits = yaml.safeLoad(fs.readFileSync(eveUnitPath, 'utf8'));
+        let units = [];
+        for (var currUnit in eveUnits) {
+            units[eveUnits[currUnit].unitID] = eveUnits[currUnit];
+        }
+
+        const dgmAttributeTypes = yaml.safeLoad(fs.readFileSync(dgmAttributeTypePath, 'utf8'));
+        let attributeTypes = [];
+        for (var currAttributeTypes in dgmAttributeTypes) {
+            attributeTypes[dgmAttributeTypes[currAttributeTypes].attributeID] = dgmAttributeTypes[currAttributeTypes];
+        }
+
+        const dgmTypeAttributes = yaml.safeLoad(fs.readFileSync(dgmTypeAttributePath, 'utf8'));
 
         // Import Items (Only ships catID=6)
 
@@ -98,9 +131,53 @@ exports.parse = function () {
                         }
                     }
 
+                    // Get Item Attributes
+
+                    const attributes = [];
+
+                    for (const currIdx in dgmTypeAttributes) {
+                        if (dgmTypeAttributes[currIdx].typeID == typID) {
+
+                            attributes[dgmTypeAttributes[currIdx].attributeID] = dgmTypeAttributes[currIdx];
+                            if (attributes[dgmTypeAttributes[currIdx].attributeID].hasOwnProperty('valueInt')) {
+                                attributes[dgmTypeAttributes[currIdx].attributeID].value = attributes[dgmTypeAttributes[currIdx].attributeID].valueInt;
+                            }
+                            else {
+                                attributes[dgmTypeAttributes[currIdx].attributeID].value = attributes[dgmTypeAttributes[currIdx].attributeID].valueFloat;
+                            }
+
+
+                            let displayName = attributeTypes[dgmTypeAttributes[currIdx].attributeID].displayName;
+                            if (!displayName) {
+                                displayName = attributeTypes[dgmTypeAttributes[currIdx].attributeID].attributeName;
+                            }
+                            attributes[dgmTypeAttributes[currIdx].attributeID].displayName = displayName;
+                            const categoryID = attributeTypes[dgmTypeAttributes[currIdx].attributeID].categoryID;
+                            attributes[dgmTypeAttributes[currIdx].attributeID].categoryID = categoryID;
+
+                            let iconFile = '';
+                            const iconID = attributeTypes[dgmTypeAttributes[currIdx].attributeID].iconID;
+
+                            if (iconID) {
+                                iconFile = iconIDs[iconID].iconFile;
+                                iconFile = iconFile.split('/').pop().replace(/\.[^/.]+$/, '');
+                            }
+                            attributes[dgmTypeAttributes[currIdx].attributeID].iconFile = iconFile;
+
+                            let unit = '';
+                            if (attributeTypes[dgmTypeAttributes[currIdx].attributeID].unitID) {
+                                unit = units[attributeTypes[dgmTypeAttributes[currIdx].attributeID].unitID].displayName
+                            }
+                            attributes[dgmTypeAttributes[currIdx].attributeID].unit = unit;
+
+                        }
+                    }
+
+
                     // store ship infos
 
                     ships[typID] = currType;
+                    ships[typID].attributes = attributes;
                     ships[typID].queryName = currType.name.en;
                     ships[typID].catName = catName;
                     ships[typID].grpName = grpName;
@@ -117,9 +194,6 @@ exports.parse = function () {
         }
 
         console.log("SDE YAML loaded: " + nbShips + " ship processed.");
-
-
-        return ships;
 
     } catch (e) {
         console.log(e);

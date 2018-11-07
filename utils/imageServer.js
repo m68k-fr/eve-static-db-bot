@@ -53,7 +53,15 @@ function resize(path, format, width, height) {
     }
 
     if (width || height) {
-        transform = transform.resize(width, height);
+        transform = transform
+            .resize(width,height);
+            /*.extend({
+                top: 0,
+                bottom: 0,
+                left: 61,
+                right: 72,
+                background: { r: 0, g: 0, b: 0, alpha: 0 }
+            });*/
     }
 
     return readStream.pipe(transform);

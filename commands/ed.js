@@ -4,7 +4,7 @@
 const config = require('../config.json');
 const sdeparser = require('../utils/sdeparser.js');
 const fuzzy = require('fuzzy');
-const SDEArray = sdeparser.parse();
+const SDEArray = sdeparser.getShips();
 
 const fuzzyOptions = {
     extract: function (el) {
@@ -14,7 +14,6 @@ const fuzzyOptions = {
 
 
 // --- parses result; added due to checking for khParameter.
-// --- from '/kh kagutsuchi' to '/kh "kagutsuchi" kamihime'
 // --- parameter is optional but recommended (user)
 
 const parseResult = (objectType, result, parameter) => {
@@ -48,7 +47,7 @@ exports.run = (client, message, args) => {
         }
     }
 
-    if (client.awaitingUsers.get(message.author.id)) return message.channel.send(`You have an existing selection ongoing. Please say \`cancel\` or \`0\` if you wish to issue a new ${config.prefix}kh command.`);
+    if (client.awaitingUsers.get(message.author.id)) return message.channel.send(`You have an existing selection ongoing. Please say \`cancel\` or \`0\` if you wish to issue a new ${config.prefix}ed command.`);
 
     let khRequest = args.join(' ');
     let khParameter = null;
@@ -71,16 +70,28 @@ exports.run = (client, message, args) => {
 
     console.log('fuzzy found: ' + khItems.length + ' result');
 
-
     // --- Check for any results
-    // --- If there is only 5 and below on results.length, we will continue and cherry pick first element of results
-    // --- Otherwise, we will return with a map of matching items
 
     if (!parameterResults.length)
         return message.channel.send(`Query '${khRequest}'${khParameter ? ` with parameter '${khParameter}'` : ''} is not found.`);
 
+    if (!khParameter) {
+        if (parameterResults.length > 1) {
+            message.channel.send(
+                `The following items match with query '${khRequest}':`
+                + `\n\`\`\`js\n{\n\t0: (Void) "Cancel the Selection",\n${parameterResults.slice(0, 9).map(el => `\t${parameterResults.indexOf(el) + 1}: (${el.catName}) "${el.queryName}"`).join(',\n')}\n}\`\`\``
+                + `\nSelect an item by their designated number to prompt me to continue. Say \`cancel\` or \`0\` to cancel the command.`
+                + `\nExpires within 30 seconds.`
+            ).then(sentMessage => {
+                client.awaitSelection(message, sentMessage, parameterResults.slice(0, 9));
+                client.awaitingUsers.set(message.author.id, true);
+            });
+            return;
+        }
+    }
 
-    // --- Condition check from parseResult() for Ship, Module, Blueprint, Weapons, and Accessories
+
+    // --- Condition check from parseResult() for Ship, Module and Blueprint
 
     let embed;
 
@@ -100,7 +111,7 @@ exports.run = (client, message, args) => {
 
         // --- Blueprint
 
-        case parseResult('Soul', parameterResults[0].objectType, khParameter):
+        case parseResult('Blueprint', parameterResults[0].objectType, khParameter):
             embed = require('../utils/khEmbeds/blueprint').run(message, config, parameterResults[0]);
             break;
          */

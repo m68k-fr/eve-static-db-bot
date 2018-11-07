@@ -4,8 +4,6 @@ const imageServer = require("./utils/imageServer");
 
 const {
     token, // Your bot's token
-    owners,
-    discord_code,
     prefix // Your bot's prefix
 } = require("./config.json"); // This is your configuration file, see an example on "config.sample.json"
 
@@ -18,6 +16,7 @@ class EveClient extends Discord.Client {
     constructor(options) {
         super(options);
         this.clearDialog = require('./utils/clearDialog');
+        this.awaitSelection = require('./utils/awaitSelection');
         this.logger = require('./utils/logger').logger;
         this.awaitingUsers = new Discord.Collection();
     }
@@ -30,10 +29,17 @@ const client = new EveClient({
 });
 
 
-/*const used = process.memoryUsage();
-for (let key in used) {
-    console.log(`${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
-}*/
+// -------------- This loop reads the /events/ folder and attaches each event file to the appropriate event.
+
+fs.readdir("./events/", (err, files) => {
+    if (err) return console.error(err);
+    files.forEach(file => {
+        let eventFunction = require(`./events/${file}`);
+        let eventName = file.split(".")[0];
+        // super-secret recipe to call events with all their proper arguments *after* the `client` var.
+        client.on(eventName, (...args) => eventFunction.run(client, ...args));
+    });
+});
 
 
 // -------------------- event message ----------------------
@@ -51,19 +57,16 @@ client.on("message", message => {
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
-    //try {
-    if (!fs.existsSync(`./commands/${command}.js`)) return;
-    let commandFile = require(`./commands/${command}.js`);
-    commandFile.run(client, message, args);
-    /*} catch(err) {
-      message.channel.send(
-        `Sorry, something happened: \`${err.message}\`\n\n` +
-        `If this is a feature-breaking issue, please contact: ` +
-        `${owners ? owners.map(o => `\`${client.users.get(o).tag}\``).join(', ') : 'No bot developers were in the configuration'}\n` +
-        `Or proceed to this Discord invite code: \`${discord_code ? discord_code : 'No invite code was in the configuration'}\``
-      );
-      client.logger.error(err);
-    }*/
+    try {
+        if (!fs.existsSync(`./commands/${command}.js`)) return;
+        let commandFile = require(`./commands/${command}.js`);
+        commandFile.run(client, message, args);
+    } catch (err) {
+        message.channel.send(
+            `Sorry, something happened: \`${err.message}\`\n\n`
+        );
+        client.logger.error(err);
+    }
 
 });
 
