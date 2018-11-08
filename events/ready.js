@@ -19,9 +19,9 @@ exports.run = (client) => {
     else
         client.user.setActivity(`${client.guilds.size} server | ${config.prefix}help`, {type: 'WATCHING'});
 
-    const used = process.memoryUsage();
+    /*const used = process.memoryUsage();
     for (let key in used) {
         console.log(`Memory Usage: ${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
-    }
+    }*/
 
 }

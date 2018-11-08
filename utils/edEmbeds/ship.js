@@ -69,14 +69,10 @@ exports.run = (message, config, edItem) => {
         const catID = edItem.attributes[attrIdx].categoryID;
 
         attributeName[catID] = edItem.attributes[attrIdx].displayName.substring(0, 30).split(' ').join('_');
-        if (edItem.attributes[attrIdx].iconFile) {
-            if (config.eimojis[attributeName[catID]]) {
-                attributeName[catID] = config.eimojis[attributeName[catID]] + ' ';
-            } else {
-                attributeName[catID] += ' ' + edItem.attributes[attrIdx].iconFile + ' ';
-            }
-        }
-        else {
+
+        if (config.eimojis[attributeName[catID]]) {
+            attributeName[catID] = config.eimojis[attributeName[catID]] + ' ';
+        } else {
             attributeName[catID] += ": ";
         }
 
@@ -111,13 +107,12 @@ exports.run = (message, config, edItem) => {
 
 
     embed.addField('Fitting', attributesText[1], true);
+    embed.addField('Targetting', attributesText[6], true);
     embed.addField('Shield', attributesText[2], true);
     embed.addField('Armor', attributesText[3], true);
     embed.addField('Structure', attributesText[4], true);
-    embed.addField('Targetting', attributesText[6], true);
     embed.addField('Required Skills', attributesText[8], true);
     //embed.addField('Miscellaneous', attributesText[7], true);
-
 
     return embed;
 }

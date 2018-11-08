@@ -22,8 +22,6 @@ exports.parse = function () {
     const dgmAttributeTypePath = sdePath + 'bsd/dgmAttributeTypes.yaml';
     const dgmTypeAttributePath = sdePath + 'bsd/dgmTypeAttributes.yaml';
 
-    const iconIDPath = sdePath + 'fsd/iconIDs.yaml';
-
 
     const blueprintsPath = sdePath + 'fsd/blueprints.yaml';
     try {
@@ -44,13 +42,6 @@ exports.parse = function () {
                 }
             }
         }*/
-
-        //
-
-
-        // Load Icons
-
-        const iconIDs = yaml.safeLoad(fs.readFileSync(iconIDPath, 'utf8'));
 
 
         // Load Races
@@ -152,23 +143,33 @@ exports.parse = function () {
                                 displayName = attributeTypes[dgmTypeAttributes[currIdx].attributeID].attributeName;
                             }
                             attributes[dgmTypeAttributes[currIdx].attributeID].displayName = displayName;
+
                             const categoryID = attributeTypes[dgmTypeAttributes[currIdx].attributeID].categoryID;
                             attributes[dgmTypeAttributes[currIdx].attributeID].categoryID = categoryID;
 
-                            let iconFile = '';
-                            const iconID = attributeTypes[dgmTypeAttributes[currIdx].attributeID].iconID;
-
-                            if (iconID) {
-                                iconFile = iconIDs[iconID].iconFile;
-                                iconFile = iconFile.split('/').pop().replace(/\.[^/.]+$/, '');
-                            }
-                            attributes[dgmTypeAttributes[currIdx].attributeID].iconFile = iconFile;
 
                             let unit = '';
                             if (attributeTypes[dgmTypeAttributes[currIdx].attributeID].unitID) {
                                 unit = units[attributeTypes[dgmTypeAttributes[currIdx].attributeID].unitID].displayName
                             }
                             attributes[dgmTypeAttributes[currIdx].attributeID].unit = unit;
+
+
+                            // Required Skills
+                            if (categoryID == 8) {
+                                const skillID = attributes[dgmTypeAttributes[currIdx].attributeID].value;
+                                if (skillID > 5) {
+                                    const skill = typeIDs[skillID];
+
+                                    attributes[dgmTypeAttributes[currIdx].attributeID].displayName = skill.name.en;
+                                    attributes[dgmTypeAttributes[currIdx].attributeID].value = '';
+                                    attributes[dgmTypeAttributes[currIdx].attributeID].unit = '';
+                                }
+                                else {
+                                    delete attributes[dgmTypeAttributes[currIdx].attributeID];
+                                    // todo: Get the required lvl for the skill and paste result to the corresponding skill entry (lvl1-lvl5)
+                                }
+                            }
 
                         }
                     }
@@ -193,7 +194,7 @@ exports.parse = function () {
             }
         }
 
-        console.log("SDE YAML loaded: " + nbShips + " ship processed.");
+        console.log("Bot is ready, SDE YAML processed: " + nbShips + " ship registered.");
 
     } catch (e) {
         console.log(e);
