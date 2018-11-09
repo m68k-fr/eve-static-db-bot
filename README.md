@@ -8,7 +8,7 @@ This Discord bot allow you to display EVE Online ship datasheets.
 * Integrate official ship rendering.
 
 
-![](https://drive.google.com/uc?export=download&id=1QJMuShbdnI10FuvheOl1VmHiNZ2iMOxw)
+![](https://drive.google.com/uc?export=download&id=1OPxN-ih3rBtDeHmzx5nAFEBAoO2ndnnn)
 
 *****
 
