@@ -31,7 +31,7 @@ Provides a link to install this bot on your own discord server.
 * Download and unpack the [SDE](https://developers.eveonline.com/resource/resources) for TRANQUILITY archive inside your /datas folder. 
 * Download and unpack the [IEC](https://developers.eveonline.com/resource/resources) Renders archive inside your /datas folder.
 ```
-npm update
+npm install
 node app.js
 ```
 Once ready, the console will display a message similar to this one:

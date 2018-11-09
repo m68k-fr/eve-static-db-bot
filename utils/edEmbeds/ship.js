@@ -1,5 +1,12 @@
 const discord = require('discord.js');
 
+const excludedAttributes = ['armorUniformity',
+    'structureUniformity',
+    'uniformity',
+    'shieldUniformity',
+    'Tech Level'
+];
+
 const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -8,7 +15,7 @@ exports.run = (message, config, edItem) => {
 
     console.log('Displaying ItemId: ' + edItem.typID);
 
-    const ed_name = edItem.name.en;
+    let ed_name = edItem.name.en;
     const ed_link = config.wikidomain + edItem.typID;
     const ed_thumb = config.thumbrooturl + '/?width=80&imageidx=' + edItem.typID;
     const ed_image = config.thumbrooturl + '/?width=399&height=300&imageidx=' + edItem.typID;
@@ -17,21 +24,7 @@ exports.run = (message, config, edItem) => {
 
 
     let description = '';
-    if (edItem.basePrice) {
-        description += '\n' + config.eimojis['Isk'] + ' Base price: ' + numberWithCommas(edItem.basePrice) + " ISK\n\n";
-    }
     description += '*' + edItem.description.en + '*';
-
-
-    const embed = new discord.RichEmbed()
-        .setAuthor(ed_type, '')
-        .setTitle(config.eimojis[edItem.raceName] + ' ' + ed_name)
-        .setColor('#00AE86')
-        //.setDescription(description)
-        //.setThumbnail(ed_thumb)
-        .setURL(ed_link)
-        .setImage(ed_image);
-
 
     // Process Bonuses
 
@@ -68,23 +61,47 @@ exports.run = (message, config, edItem) => {
     for (var attrIdx in edItem.attributes) {
         const catID = edItem.attributes[attrIdx].categoryID;
 
-        attributeName[catID] = edItem.attributes[attrIdx].displayName.substring(0, 30).split(' ').join('_');
+        const attributeRawName = edItem.attributes[attrIdx].displayName;
 
-        if (config.eimojis[attributeName[catID]]) {
-            attributeName[catID] = config.eimojis[attributeName[catID]] + ' ';
-        } else {
-            attributeName[catID] += ": ";
+        // Inject Tech Level Attribute on top
+        if (attributeRawName.includes('Tech Level')) {
+            ed_type += ' / Tech ' + edItem.attributes[attrIdx].value;
         }
 
-        if (!attributesText[catID]) {
-            attributesText[catID] = '';
-        }
-        attributesText[catID] += attributeName[catID] + edItem.attributes[attrIdx].value + ' ' + (edItem.attributes[attrIdx].unit ? edItem.attributes[attrIdx].unit : '') + "\n";
+        const excluded = excludedAttributes.includes(attributeRawName);
+        if (!excluded) {
 
+            attributeName[catID] = attributeRawName.substring(0, 30).split(' ').join('_');
+            if (config.eimojis[attributeName[catID]]) {
+                attributeName[catID] = config.eimojis[attributeName[catID]] + ' ';
+            } else {
+                if (edItem.attributes[attrIdx].value) {
+                    attributeName[catID] += ": ";
+                }
+            }
+            if (!attributesText[catID]) {
+                attributesText[catID] = '';
+            }
+            attributesText[catID] += attributeName[catID] + edItem.attributes[attrIdx].value + ' ' + (edItem.attributes[attrIdx].unit ? edItem.attributes[attrIdx].unit : '') + "\n";
+        }
+    }
+
+    if (edItem.basePrice) {
+        ed_name += ' ' + config.eimojis['Isk'] + ' ' + numberWithCommas(edItem.basePrice) + " ISK";
     }
 
 
-    // Display all infos
+    // ---- Display all infos using RichEmbed
+
+    const embed = new discord.RichEmbed()
+        .setAuthor(ed_type, '')
+        .setTitle(config.eimojis[edItem.raceName] + ' ' + ed_name)
+        .setColor('#00AE86')
+        //.setDescription(description)
+        //.setThumbnail(ed_thumb)
+        .setURL(ed_link)
+        .setImage(ed_image);
+
 
     embed.addField('General:', config.eimojis['Mass'] + " " + numberWithCommas(edItem.mass) + " kg\n" +
         config.eimojis['Volume'] + " " + numberWithCommas(edItem.volume) + " m3\n" +
@@ -112,7 +129,7 @@ exports.run = (message, config, edItem) => {
     embed.addField('Armor', attributesText[3], true);
     embed.addField('Structure', attributesText[4], true);
     embed.addField('Required Skills', attributesText[8], true);
-    //embed.addField('Miscellaneous', attributesText[7], true);
+    embed.addField('Miscellaneous', attributesText[7], true);
 
     return embed;
 }

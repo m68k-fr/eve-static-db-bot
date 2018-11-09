@@ -22,33 +22,13 @@ exports.parse = function () {
     const dgmAttributeTypePath = sdePath + 'bsd/dgmAttributeTypes.yaml';
     const dgmTypeAttributePath = sdePath + 'bsd/dgmTypeAttributes.yaml';
 
-
-    const blueprintsPath = sdePath + 'fsd/blueprints.yaml';
     try {
-
-        // import blueprints
-
-        /*var blueprints = yaml.safeLoad(fs.readFileSync(blueprintsPath, 'utf8'));
-
-        var bpMap = [];
-        for (var bp in blueprints) {
-
-            if (blueprints[bp]['activities']['manufacturing']) {
-                var products = blueprints[bp]['activities']['manufacturing']['products'];
-                if (products) {
-                    for (var i = 0; i < products.length; i++) {
-                        bpMap[products[i].typeID] = bp;
-                    }
-                }
-            }
-        }*/
-
 
         // Load Races
 
         const chrRaces = yaml.safeLoad(fs.readFileSync(chrRacePath, 'utf8'));
         let races = [];
-        for (var currRace in chrRaces) {
+        for (let currRace in chrRaces) {
             races[chrRaces[currRace].raceID] = chrRaces[currRace];
         }
 
@@ -56,13 +36,13 @@ exports.parse = function () {
 
         const eveUnits = yaml.safeLoad(fs.readFileSync(eveUnitPath, 'utf8'));
         let units = [];
-        for (var currUnit in eveUnits) {
+        for (let currUnit in eveUnits) {
             units[eveUnits[currUnit].unitID] = eveUnits[currUnit];
         }
 
         const dgmAttributeTypes = yaml.safeLoad(fs.readFileSync(dgmAttributeTypePath, 'utf8'));
         let attributeTypes = [];
-        for (var currAttributeTypes in dgmAttributeTypes) {
+        for (let currAttributeTypes in dgmAttributeTypes) {
             attributeTypes[dgmAttributeTypes[currAttributeTypes].attributeID] = dgmAttributeTypes[currAttributeTypes];
         }
 
@@ -154,7 +134,6 @@ exports.parse = function () {
                             }
                             attributes[dgmTypeAttributes[currIdx].attributeID].unit = unit;
 
-
                             // Required Skills
                             if (categoryID == 8) {
                                 const skillID = attributes[dgmTypeAttributes[currIdx].attributeID].value;
@@ -171,9 +150,23 @@ exports.parse = function () {
                                 }
                             }
 
+                            // Damage Multiplier converted to %
+                            if ((dgmTypeAttributes[currIdx].attributeID == 109) ||
+                                (dgmTypeAttributes[currIdx].attributeID == 110) ||
+                                (dgmTypeAttributes[currIdx].attributeID == 111) ||
+                                (dgmTypeAttributes[currIdx].attributeID == 113) ||
+                                (dgmTypeAttributes[currIdx].attributeID == 267) ||
+                                (dgmTypeAttributes[currIdx].attributeID == 268) ||
+                                (dgmTypeAttributes[currIdx].attributeID == 269) ||
+                                (dgmTypeAttributes[currIdx].attributeID == 270) ||
+                                (dgmTypeAttributes[currIdx].attributeID == 271) ||
+                                (dgmTypeAttributes[currIdx].attributeID == 272) ||
+                                (dgmTypeAttributes[currIdx].attributeID == 273) ||
+                                (dgmTypeAttributes[currIdx].attributeID == 274)) {
+                                attributes[dgmTypeAttributes[currIdx].attributeID].value = Math.round((1 - attributes[dgmTypeAttributes[currIdx].attributeID].value) * 100);
+                            }
                         }
                     }
-
 
                     // store ship infos
 
