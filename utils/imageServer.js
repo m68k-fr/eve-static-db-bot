@@ -2,7 +2,7 @@ const express = require("express");
 var fs = require('fs');
 const sharp = require('sharp');
 
-exports.init = function () {
+exports.init = function (documentRoot) {
 
 
     const server = express();
@@ -27,7 +27,7 @@ exports.init = function () {
             return;
         }
 
-        const imageFile = __dirname + '/../datas/Renders/' + imageIdx + '.png';
+        const imageFile = __dirname + '/'+ documentRoot + imageIdx + '.png';
         if (!fs.existsSync(imageFile)) {
             res.send("Image not found");
             return;
@@ -38,9 +38,11 @@ exports.init = function () {
         resize(imageFile, 'png', width, height).pipe(res);
     });
 
-    server.listen(8000, () => {
+    var instance = server.listen(8000, () => {
         console.log('Express Server started!');
     });
+
+    return instance;
 
 };
 

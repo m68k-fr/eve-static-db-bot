@@ -8,7 +8,7 @@ const {
 } = require("./config.json"); // This is your configuration file, see an example on "config.sample.json"
 
 
-imageServer.init();
+var express = imageServer.init('../datas/Renders/');
 
 
 // --- Client Class Extension for Utilities

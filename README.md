@@ -1,14 +1,19 @@
 # eve-static-db-bot
 
+[![Build Status](https://travis-ci.org/m68k-fr/eve-static-db-bot.svg?branch=master)](https://travis-ci.org/m68k-fr/eve-static-db-bot)
+[![License](https://img.shields.io/github/license/m68k-fr/eve-static-db-bot.svg)](https://github.com/m68k-fr/eve-static-db-bot/blob/master/LICENSE)
+[![Invite](https://img.shields.io/badge/discord-invite--bot-green.svg?logo=discord&longCache=true&style=flat)](https://discordapp.com/oauth2/authorize?&client_id=508365871421325332&scope=bot&permissions=337984)
+
 This Discord bot allow you to display EVE Online ship datasheets.
 
-* Features about 350 ships.
-* Fuzzy search friendly: If your request matches multiple results, the bot will ask you to choose an anwser between the list of possible responses.
-* Based only on the official EVE [STATIC DATA EXPORT](https://developers.eveonline.com/resource/resources).
-* Integrate official ship rendering.
+* Features all ships about 350 ships.
+* Fuzzy search friendly: If your request matches multiple results, the bot will ask you to choose an answer between the list of possible responses.
+* Based on the official EVE [STATIC DATA EXPORT](https://developers.eveonline.com/resource/resources).
+* Display official ship rendering.
 
 
 ![](https://drive.google.com/uc?export=download&id=1OPxN-ih3rBtDeHmzx5nAFEBAoO2ndnnn)
+
 
 *****
 
