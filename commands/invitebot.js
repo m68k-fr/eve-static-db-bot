@@ -21,7 +21,7 @@ exports.run = (client, message, args) => {
 
     const description = "Please, ensure you have the 'Manage server' role on your discord server to allow installation.\n";
     embed.setDescription(description);
-    embed.setURL("https:\/\/discordapp.com/oauth2/authorize?client_id=" + client.user.id + "&scope=bot&permissions=" + config.bot_default_permission);
+    embed.setURL("https:\/\/discordapp.com/oauth2/authorize?client_id=" + client.user.id + "&scope=bot&permissions=" + config.bot_normal_mode_permission);
     message.channel.send({embed});
 
 }

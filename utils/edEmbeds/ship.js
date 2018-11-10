@@ -6,7 +6,8 @@ const excludedAttributes = ['armorUniformity',
     'shieldUniformity',
     'Tech Level',
     'scanSpeed',
-    'CPU Need Bonus'
+    'CPU Need Bonus',
+    'Theoretical Maximum Targeting Range'
 ];
 
 const padBigNumber = (x) => {
@@ -15,14 +16,11 @@ const padBigNumber = (x) => {
 
 exports.run = (message, config, edItem) => {
 
-    console.log('Displaying ItemId: ' + edItem.typID);
-
     let ed_name = edItem.name.en;
     const ed_link = config.wikidomain + edItem.typID;
-    const ed_thumb = config.thumbrooturl + '/?width=80&imageidx=' + edItem.typID;
-    const ed_image = config.thumbrooturl + '/?width=399&height=300&imageidx=' + edItem.typID;
+    const ed_image = config.thumbrooturl + '/?type=render&width=256&height=256&imageidx=' + edItem.typID;
 
-    let ed_type = edItem.raceName + ' / ' + edItem.grpName;
+    let ed_type = edItem.raceName + ' Ship / ' + edItem.grpName;
 
 
     let description = '';
@@ -71,6 +69,7 @@ exports.run = (message, config, edItem) => {
         }
 
         const excluded = excludedAttributes.includes(attributeRawName);
+
         if (!excluded) {
 
             attributeName[catID] = attributeRawName.substring(0, 30).split(' ').join('_');
@@ -89,7 +88,8 @@ exports.run = (message, config, edItem) => {
             }
 
             if (catID == 8) {
-                attributesText[catID] += config.eimojis['Mass'] + ' ';
+                attributeName[catID] = attributeRawName.substring(0, 30);
+                attributesText[catID] += config.eimojis['Skill_Book'] + ' ';
             }
 
             attributesText[catID] += attributeName[catID] + edItem.attributes[attrIdx].value + ' ' + (edItem.attributes[attrIdx].unit ? edItem.attributes[attrIdx].unit : '') + "\n";
@@ -108,7 +108,6 @@ exports.run = (message, config, edItem) => {
         .setTitle(config.eimojis[edItem.raceName] + ' ' + ed_name)
         .setColor('#00AE86')
         //.setDescription(description)
-        //.setThumbnail(ed_thumb)
         .setURL(ed_link)
         .setImage(ed_image);
 

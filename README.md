@@ -2,18 +2,19 @@
 
 [![Build Status](https://travis-ci.org/m68k-fr/eve-static-db-bot.svg?branch=master)](https://travis-ci.org/m68k-fr/eve-static-db-bot)
 [![License](https://img.shields.io/github/license/m68k-fr/eve-static-db-bot.svg)](https://github.com/m68k-fr/eve-static-db-bot/blob/master/LICENSE)
-[![Invite](https://img.shields.io/badge/discord-invite--bot-green.svg?logo=discord&longCache=true&style=flat)](https://discordapp.com/oauth2/authorize?&client_id=508365871421325332&scope=bot&permissions=337984)
+[![Invite](https://img.shields.io/badge/invite--bot-normal-green.svg?logo=discord&longCache=true&style=flat)](https://discordapp.com/oauth2/authorize?&client_id=508365871421325332&scope=bot&permissions=75840)
+[![Invite](https://img.shields.io/badge/invite--bot-restricted-green.svg?logo=discord&longCache=true&style=flat)](https://discordapp.com/oauth2/authorize?&client_id=508365871421325332&scope=bot&permissions=2048)
 
 This Discord bot allow you to display EVE Online ship datasheets.
 
-* Features all ships about 350 ships.
-* Fuzzy search friendly: If your request matches multiple results, the bot will ask you to choose an answer between the list of possible responses.
+* Features all ships modules and blueprints, about 7500 items.
+* Fuzzy search friendly: If your request matches multiple results, the bot will ask you to choose an answer between a list of possible responses.
 * Based on the official EVE [STATIC DATA EXPORT](https://developers.eveonline.com/resource/resources).
-* Display official ship rendering.
-
+* Security beeing a sensible topic in EVE, we provide 2 mode to install this bot on your Discord server. Regarding your preference, use the corresponding invite button on top of this page. For a maximum security, we also advise you to restrict the bot to public channels only after installation.
+    * NORMAL mode: Ask for **Send Messages, Manage Messages, Read Message history & Add Reactions** permissions during installation.
+    * RESTRICTED mode: Only ask for **Send Messages** permission, but the bot won't be able to delete the selection text after dealing with a multiple choice.
 
 ![](https://drive.google.com/uc?export=download&id=1OPxN-ih3rBtDeHmzx5nAFEBAoO2ndnnn)
-
 
 *****
 
@@ -35,13 +36,14 @@ Provides a link to install this bot on your own discord server.
 * Clone this repository.
 * Download and unpack the [SDE](https://developers.eveonline.com/resource/resources) for TRANQUILITY archive inside your /datas folder. 
 * Download and unpack the [IEC](https://developers.eveonline.com/resource/resources) Renders archive inside your /datas folder.
+* Download and unpack the [IEC](https://developers.eveonline.com/resource/resources) Icons archive inside your /datas folder.
 ```
 npm install
 node app.js
 ```
 Once ready, the console will display a message similar to this one:
 ```
-Bot is ready, SDE YAML processed: 347 ship registered.
+Bot is ready, SDE YAML processed: 347 ship, 3810 module registered.
 ```
 
 

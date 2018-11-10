@@ -10,8 +10,8 @@ module.exports = async (message, dialog, result) => {
         const responses = await message.channel.awaitMessages(
             m =>
                 m.author.id === message.author.id &&
-                ( m.content.toLowerCase() === 'cancel' || parseInt(m.content) === 0 ||
-                    ( parseInt(m.content) >= 1 && parseInt(m.content) <= result.length) ), {
+                (m.content.toLowerCase() === 'cancel' || parseInt(m.content) === 0 ||
+                    (parseInt(m.content) >= 1 && parseInt(m.content) <= result.length)), {
                 max: 1,
                 time: 30 * 1000,
                 errors: ['time']
@@ -20,20 +20,35 @@ module.exports = async (message, dialog, result) => {
 
         const response = responses.first();
         let embed;
-        if(response.content.toLowerCase() === 'cancel' || parseInt(response.content) === 0) {
+        if (response.content.toLowerCase() === 'cancel' || parseInt(response.content) === 0) {
             message.client.awaitingUsers.delete(message.author.id);
             return dialog.edit('Selection cancelled.');
         }
 
         const responseIdx = parseInt(response.content) - 1;
 
-        switch(true) {
+        console.log('Displaying ItemId: ' + result[responseIdx].typID);
+
+        switch (true) {
 
             // --- Ships
 
             case parseResult('Ship', result[responseIdx].catName):
                 embed = require('./edEmbeds/ship').run(message, config, result[responseIdx]);
                 break;
+
+            // --- Module
+
+            case parseResult('Module', result[responseIdx].catName):
+                embed = require('../utils/edEmbeds/module').run(message, config, result[responseIdx]);
+                break;
+
+            // --- Blueprint
+
+            case parseResult('Blueprint', result[responseIdx].catName):
+                embed = require('../utils/edEmbeds/blueprint').run(message, config, result[responseIdx]);
+                break;
+
         }
 
         if (message.channel.type === 'text' && message.channel.permissionsFor(message.client.user).has('MANAGE_MESSAGES')) response.delete();

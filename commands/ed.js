@@ -1,10 +1,10 @@
 // Return Simple Item datasheets.
-// Currently supported items: Kamihimes Eidolons Souls & Weapons
+// Currently supported items: Ships Modules Blueprints
 
 const config = require('../config.json');
 const sdeparser = require('../utils/sdeparser.js');
 const fuzzy = require('fuzzy');
-const SDEArray = sdeparser.getShips();
+const SDEArray = sdeparser.getItems();
 
 const fuzzyOptions = {
     extract: function (el) {
@@ -95,6 +95,8 @@ exports.run = (client, message, args) => {
 
     let embed;
 
+    console.log('Displaying ItemId: ' + parameterResults[0].typID);
+
     switch (true) {
 
         // --- ship
@@ -105,16 +107,15 @@ exports.run = (client, message, args) => {
 
         // --- Module
 
-        /*case parseResult('Module', parameterResults[0].objectType, khParameter):
-            embed = require('../utils/khEmbeds/module').run(message, config, parameterResults[0]);
+        case parseResult('Module', parameterResults[0].catName, khParameter):
+            embed = require('../utils/edEmbeds/module').run(message, config, parameterResults[0]);
             break;
 
         // --- Blueprint
 
-        case parseResult('Blueprint', parameterResults[0].objectType, khParameter):
-            embed = require('../utils/khEmbeds/blueprint').run(message, config, parameterResults[0]);
+        case parseResult('Blueprint', parameterResults[0].catName, khParameter):
+            embed = require('../utils/edEmbeds/blueprint').run(message, config, parameterResults[0]);
             break;
-         */
 
     }
 

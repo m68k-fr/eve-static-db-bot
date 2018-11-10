@@ -20,7 +20,7 @@ try {
 
 // test Express
 
-let imgserver = imageServer.init('../../datas/Renders/');
+let imgserver = imageServer.init('../../datas');
 http.request({method: 'HEAD', host: 'localhost', port: 8000, path: '/'}, (response) => {
     callback(response);
 }).on('error', callback).end();
