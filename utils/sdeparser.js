@@ -133,6 +133,18 @@ exports.parse = function () {
                                 unit = units[attributeTypes[dgmTypeAttributes[currIdx].attributeID].unitID].displayName
                             }
                             attributes[dgmTypeAttributes[currIdx].attributeID].unit = unit;
+                            // Convert meters to km if needed.
+                            if ((attributes[dgmTypeAttributes[currIdx].attributeID].unit == 'm') && (attributes[dgmTypeAttributes[currIdx].attributeID].value > 1000)) {
+                                attributes[dgmTypeAttributes[currIdx].attributeID].unit = 'km';
+                                attributes[dgmTypeAttributes[currIdx].attributeID].value = attributes[dgmTypeAttributes[currIdx].attributeID].value / 1000;
+                            }
+
+                            // 's' unit is declared as ms, need to divide by 1000
+                            if (attributes[dgmTypeAttributes[currIdx].attributeID].unit == 's') {
+                                attributes[dgmTypeAttributes[currIdx].attributeID].value = attributes[dgmTypeAttributes[currIdx].attributeID].value / 1000;
+                            }
+
+
 
                             // Required Skills
                             if (categoryID == 8) {

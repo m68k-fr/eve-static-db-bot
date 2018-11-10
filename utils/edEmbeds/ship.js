@@ -4,11 +4,13 @@ const excludedAttributes = ['armorUniformity',
     'structureUniformity',
     'uniformity',
     'shieldUniformity',
-    'Tech Level'
+    'Tech Level',
+    'scanSpeed',
+    'CPU Need Bonus'
 ];
 
-const numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+const padBigNumber = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
 exports.run = (message, config, edItem) => {
@@ -82,12 +84,20 @@ exports.run = (message, config, edItem) => {
             if (!attributesText[catID]) {
                 attributesText[catID] = '';
             }
+            if (edItem.attributes[attrIdx].value > 9999) {
+                edItem.attributes[attrIdx].value = padBigNumber(edItem.attributes[attrIdx].value);
+            }
+
+            if (catID == 8) {
+                attributesText[catID] += config.eimojis['Mass'] + ' ';
+            }
+
             attributesText[catID] += attributeName[catID] + edItem.attributes[attrIdx].value + ' ' + (edItem.attributes[attrIdx].unit ? edItem.attributes[attrIdx].unit : '') + "\n";
         }
     }
 
     if (edItem.basePrice) {
-        ed_name += ' ' + config.eimojis['Isk'] + ' ' + numberWithCommas(edItem.basePrice) + " ISK";
+        ed_name += ' ' + config.eimojis['Isk'] + ' ' + padBigNumber(edItem.basePrice) + " ISK";
     }
 
 
@@ -103,12 +113,9 @@ exports.run = (message, config, edItem) => {
         .setImage(ed_image);
 
 
-    embed.addField('General:', config.eimojis['Mass'] + " " + numberWithCommas(edItem.mass) + " kg\n" +
-        config.eimojis['Volume'] + " " + numberWithCommas(edItem.volume) + " m3\n" +
-        config.eimojis['Cargo_Capacity'] + " " + numberWithCommas(edItem.capacity) + ' m3', true);
-
     embed.addField('Capacitor', attributesText[5], true);
     embed.addField('Drones', attributesText[10], true);
+    embed.addField('Required Skills', attributesText[8], true);
 
     // Display Bonuses
 
@@ -128,8 +135,14 @@ exports.run = (message, config, edItem) => {
     embed.addField('Shield', attributesText[2], true);
     embed.addField('Armor', attributesText[3], true);
     embed.addField('Structure', attributesText[4], true);
-    embed.addField('Required Skills', attributesText[8], true);
-    embed.addField('Miscellaneous', attributesText[7], true);
+    //embed.addField('Required Skills', attributesText[8], true);
+
+    embed.addField('Structure', config.eimojis['Mass'] + ' ' + padBigNumber(edItem.mass) + " kg\n" +
+        config.eimojis['Volume'] + " " + padBigNumber(edItem.volume) + " m3\n" +
+        config.eimojis['Cargo_Capacity'] + " " + padBigNumber(edItem.capacity) + ' m3', true);
+
+
+    //embed.addField('Miscellaneous', attributesText[7], true);
 
     return embed;
 }
