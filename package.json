@@ -1,14 +1,14 @@
 {
-  "name": "eve-bot",
+  "name": "eve-static-db-bot",
   "version": "0.1.0",
-  "description": "A simple Discord bot for EVE Online",
+  "description": "A Discord bot for EVE Online",
   "main": "app.js",
   "scripts": {
     "test": "node test/bot.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/m68k-fr/eve-bot.git"
+    "url": "git+https://github.com/m68k-fr/eve-static-db-bot"
   },
   "keywords": [
     "Discord",
@@ -18,9 +18,9 @@
   "author": "m68k",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/m68k-fr/eve-bot/issues"
+    "url": "https://github.com/m68k-fr/eve-static-db-bot/issues"
   },
-  "homepage": "https://github.com/m68k-fr/eve-bot#readme",
+  "homepage": "https://github.com/m68k-fr/eve-static-db-bot#readme",
   "devDependencies": {
     "discord.js": "^11.4.2",
     "express": "^4.16.4",

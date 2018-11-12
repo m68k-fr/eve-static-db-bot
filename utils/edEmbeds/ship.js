@@ -20,6 +20,7 @@ const excludedAttributes = [
 
 const attrshipWarpSpeed = 1281;
 const attrWarpSpeedMultiplier = 600;
+const attrFuelBayCapacity = 1549;
 
 
 // ---- Attribute Category IDs
@@ -81,15 +82,25 @@ exports.run = (message, config, edItem) => {
         }
     }
 
-    // Process Attributes
+    // ---- Process Attributes
 
     let attributesText = [];
     let attributeName = [];
 
     // merge global attributes to structure category
+
     attributesText[catStructure] = config.eimojis['Mass'] + ' ' + padBigNumber(edItem.mass) + " kg\n" +
         config.eimojis['Volume'] + " " + padBigNumber(edItem.volume) + " m3\n" +
         config.eimojis['Cargo_Capacity'] + " " + padBigNumber(edItem.capacity) + ' m3\n';
+
+
+
+    // Move attributes to the needed category before processing
+
+    if (edItem.attributes[attrFuelBayCapacity]) {
+        edItem.attributes[attrFuelBayCapacity].categoryID = catJumpDriveSystems;
+    }
+
 
 
     for (var attrIdx in edItem.attributes) {
