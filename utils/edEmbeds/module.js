@@ -19,7 +19,7 @@ exports.run = (message, config, edItem) => {
     // ---- Display all infos using RichEmbed
 
     const embed = new discord.RichEmbed()
-        .setAuthor(ed_type, '')
+        .setAuthor('(Work in progress) ' + ed_type, '')
         .setTitle(ed_name)
         .setColor('#00AE86')
         .setDescription(description)

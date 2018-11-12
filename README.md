@@ -2,41 +2,59 @@
 
 [![Build Status](https://travis-ci.org/m68k-fr/eve-static-db-bot.svg?branch=master)](https://travis-ci.org/m68k-fr/eve-static-db-bot)
 [![License](https://img.shields.io/github/license/m68k-fr/eve-static-db-bot.svg)](https://github.com/m68k-fr/eve-static-db-bot/blob/master/LICENSE)
-[![Invite](https://img.shields.io/badge/invite--bot-normal-green.svg?logo=discord&longCache=true&style=flat)](https://discordapp.com/oauth2/authorize?&client_id=508365871421325332&scope=bot&permissions=75840)
-[![Invite](https://img.shields.io/badge/invite--bot-restricted-green.svg?logo=discord&longCache=true&style=flat)](https://discordapp.com/oauth2/authorize?&client_id=508365871421325332&scope=bot&permissions=2048)
+[![Invite](https://img.shields.io/badge/public--bot-invite-green.svg?logo=discord&longCache=true&style=flat)](https://discordapp.com/oauth2/authorize?&client_id=508365871421325332&scope=bot&permissions=354368)
 
-This Discord bot allow you to display EVE Online ship datasheets.
 
-* Features all ships modules and blueprints, about 7500 items.
+This Discord bot displays EVE Online item infos.
+
+* Features all ships, modules and blueprints, about 7500 items.
 * Fuzzy search friendly: If your request matches multiple results, the bot will ask you to choose an answer between a list of possible responses.
 * Based on the official EVE [STATIC DATA EXPORT](https://developers.eveonline.com/resource/resources).
-* Security beeing a sensible topic in EVE, we provide 2 mode to install this bot on your Discord server. Regarding your preference, use the corresponding invite button on top of this page. For a maximum security, we also advise you to restrict the bot to public channels only after installation.
-    * NORMAL mode: Ask for **Send Messages, Manage Messages, Read Message history & Add Reactions** permissions during installation.
-    * RESTRICTED mode: Only ask for **Send Messages** permission, but the bot won't be able to delete the selection text after dealing with a multiple choice.
+* Chatting with this bot is supported in private messages.
 
 ![](https://drive.google.com/uc?export=download&id=1OPxN-ih3rBtDeHmzx5nAFEBAoO2ndnnn)
 
+
+## How do I invite this bot to my Discord server?
+
+If you don't want to mess with the hassle of hosting yourself this bot on a server, just use the public invite button on top of this page.
+  
+## What permissions does this bot require?
+
+This bot requires the following channel permissions:
+
+| Permission | Reason |
+|---|---|
+| Read Messages History| Allows the bot to read your request.
+| Send Messages | Allows the bot to reply to your commands.
+| Use External Emojis | Allows the bot to display EVE custom icons.
+| Embed Links   | Allows the bot to post Discord rich embed content containing images (ship renders, module icons) and hyperlinks (an external EVE database website).
+| Add Reactions | Allows the bot to post a trash icon reaction. You can click on it to quickly erase your datasheet response.
+| Manage Messages | Allows the bot to clear the multiple choice text associated with a response.  
+
+If you're not confident with the **Manage Messages** permission, you can still edit the bot role after installation to uncheck it.
+Be aware, removing this, the bot won't be able to clean the temporary selection text, leaving unnecessary spam on your channel.
+
+## Commands:
+
+| Command | Description |
+|---|---|
+| /ed [itemName] | Display info about a specific eve online item.
+| /help | Display information about available commands and current version.
+| /invitebot | Provide a link to install this bot on your own Discord server.
+
+
 *****
 
-## List of commands:
+## Hosting your own copy:
 
-**/ed [ship name]**  
-Displays info about a specific eve online ship:  
-
-**/help**  
-Display the list of available commands.
-
-**/invitebot**  
-Provides a link to install this bot on your own discord server.
-
-*****
-
-## Install & Running:
-
+* Node 8 is required.
+* Your server must be accessible from outside to serve images (default port: 8000)
 * Clone this repository.
 * Download and unpack the [SDE](https://developers.eveonline.com/resource/resources) for TRANQUILITY archive inside your /datas folder. 
 * Download and unpack the [IEC](https://developers.eveonline.com/resource/resources) Renders archive inside your /datas folder.
 * Download and unpack the [IEC](https://developers.eveonline.com/resource/resources) Icons archive inside your /datas folder.
+ 
 ```
 npm install
 node app.js
@@ -60,7 +78,7 @@ __prefix:__
 Your discord prefix command. (default is '/')
 
 __thumbrooturl:__  
-This bot is using Express to serve images.  
+This bot is using Express to serve ship images and item icons.  
 Provide your ip/domainname and port as a http url to link images. The service must be accessible from outside.
 
 
@@ -69,8 +87,8 @@ Website domain to link each ship page.
 
 
 __eimojis:__  
-Due to limited embed customization, Discord server eimojis are used to display custom eve online icons:    
+Due to limited embed customization, Discord server eimojis are used to display eve online attribute icons:    
 On your Discord server, go to "server settings" and "emoji" tab, then add all the custom eimojis provided in the /datas/eimojis folder.
-Inside your Discord channel, use the command \\:myeimojishortcut: (example: \\:Caldari:) to get your personal eimojis codes.  
+Inside your Discord channel, use the command \\:myeimojishortcut: (example: \\:Caldari:) to get your personal eimojis codes. 
 Report all resulting Ids for eimojis in your config.json file.
 

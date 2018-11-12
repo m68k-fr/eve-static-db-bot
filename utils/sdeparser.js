@@ -5,7 +5,6 @@ const striptags = require('striptags');
 const items = [];
 let itemCount = {Ships: 0, Modules: 0, Blueprints: 0};
 
-
 exports.getItems = function () {
     return items;
 };
@@ -14,8 +13,29 @@ exports.getItemCount = function () {
     return itemCount;
 };
 
-
 exports.parse = function () {
+
+    const unitLengthID = 1;
+    const unitMilliseconds = 101;
+    const unitInverseAbsolutePercentID = 108;
+    const unitTypeID = 116;
+    const unitAbsolutePercent = 127;
+
+    const requiredSkillCategoryID = 8;
+
+
+    const requiredSkill1ID = 182;
+    const requiredSkill2ID = 183;
+    const requiredSkill3ID = 184;
+    const requiredSkill4ID = 1285;
+    const requiredSkill5ID = 1289;
+    const requiredSkill6ID = 1290;
+    const requiredSkill1LevelID = 277;
+    const requiredSkill2LevelID = 278;
+    const requiredSkill3LevelID = 279;
+    const requiredSkill4LevelID = 1286;
+    const requiredSkill5LevelID = 1287;
+    const requiredSkill6LevelID = 1288;
 
 
     const sdePath = './datas/sde/';
@@ -96,14 +116,17 @@ exports.parse = function () {
 
                         // sanitize bonuses text & get Bonus type Label
 
-                        let typeBonusName = '';
+                        let skillBonusName = '';
                         if (currType.traits) {
-
                             if (currType.traits.types) {
-                                for (let typeBonus in currType.traits.types) {
-                                    typeBonusName = typeIDs[typeBonus].name.en;
-                                    for (let bonusId in currType.traits.types[typeBonus]) {
-                                        currType.traits.types[typeBonus][bonusId].bonusText.en = striptags(currType.traits.types[typeBonus][bonusId].bonusText.en);
+                                for (let skillBonus in currType.traits.types) {
+                                    skillBonusName = typeIDs[skillBonus].name.en;
+                                    for (let bonusId in currType.traits.types[skillBonus]) {
+                                        currType.traits.types[skillBonus][bonusId].bonusText.en = striptags(currType.traits.types[skillBonus][bonusId].bonusText.en);
+                                        currType.traits.types[skillBonus][bonusId].skill = skillBonusName;
+                                        if (currType.traits.types[skillBonus][bonusId].unitID) {
+                                            currType.traits.types[skillBonus][bonusId].unit = units[currType.traits.types[skillBonus][bonusId].unitID].displayName;
+                                        }
                                     }
                                 }
                             }
@@ -111,6 +134,9 @@ exports.parse = function () {
                             if (currType.traits.roleBonuses) {
                                 for (let i = 0; i < currType.traits.roleBonuses.length; i++) {
                                     currType.traits.roleBonuses[i].bonusText.en = striptags(currType.traits.roleBonuses[i].bonusText.en);
+                                    if (currType.traits.roleBonuses[i].unitID) {
+                                        currType.traits.roleBonuses[i].unit = units[currType.traits.roleBonuses[i].unitID].displayName;
+                                    }
                                 }
                             }
 
@@ -136,7 +162,6 @@ exports.parse = function () {
                                     attributes[dgmTypeAttributes[currIdx].attributeID].value = attributes[dgmTypeAttributes[currIdx].attributeID].valueFloat;
                                 }
 
-
                                 let displayName = attributeTypes[dgmTypeAttributes[currIdx].attributeID].displayName;
                                 if (!displayName) {
                                     displayName = attributeTypes[dgmTypeAttributes[currIdx].attributeID].attributeName;
@@ -147,53 +172,84 @@ exports.parse = function () {
                                 attributes[dgmTypeAttributes[currIdx].attributeID].categoryID = categoryID;
 
 
+                                // Get unit and convert value if needed
                                 let unit = '';
                                 if (attributeTypes[dgmTypeAttributes[currIdx].attributeID].unitID) {
-                                    unit = units[attributeTypes[dgmTypeAttributes[currIdx].attributeID].unitID].displayName
+                                    unit = units[attributeTypes[dgmTypeAttributes[currIdx].attributeID].unitID].displayName;
+                                    switch (attributeTypes[dgmTypeAttributes[currIdx].attributeID].unitID) {
+                                        case unitLengthID:
+                                            if (attributes[dgmTypeAttributes[currIdx].attributeID].value > 999) {
+                                                attributes[dgmTypeAttributes[currIdx].attributeID].value = attributes[dgmTypeAttributes[currIdx].attributeID].value / 1000;
+                                                unit = 'km';
+                                            }
+                                            break;
+
+                                        case unitMilliseconds:
+                                            attributes[dgmTypeAttributes[currIdx].attributeID].value = attributes[dgmTypeAttributes[currIdx].attributeID].value / 1000;
+                                            break;
+
+                                        case unitInverseAbsolutePercentID:
+                                            attributes[dgmTypeAttributes[currIdx].attributeID].value = Math.round((1 - attributes[dgmTypeAttributes[currIdx].attributeID].value) * 100);
+                                            break;
+
+                                        case unitAbsolutePercent:
+                                            attributes[dgmTypeAttributes[currIdx].attributeID].value = attributes[dgmTypeAttributes[currIdx].attributeID].value * 100;
+                                            break;
+
+                                        case unitTypeID:
+                                            if (categoryID != requiredSkillCategoryID) {
+                                                attributes[dgmTypeAttributes[currIdx].attributeID].value = typeIDs[attributes[dgmTypeAttributes[currIdx].attributeID].value].name.en;
+                                                unit = '';
+                                            }
+                                            break;
+
+                                    }
                                 }
                                 attributes[dgmTypeAttributes[currIdx].attributeID].unit = unit;
-                                // Convert meters to km if needed.
-                                if ((attributes[dgmTypeAttributes[currIdx].attributeID].unit == 'm') && (attributes[dgmTypeAttributes[currIdx].attributeID].value > 1000)) {
-                                    attributes[dgmTypeAttributes[currIdx].attributeID].unit = 'km';
-                                    attributes[dgmTypeAttributes[currIdx].attributeID].value = attributes[dgmTypeAttributes[currIdx].attributeID].value / 1000;
-                                }
+                            }
+                        }
 
-                                // 's' unit is declared as ms, need to divide by 1000
-                                if (attributes[dgmTypeAttributes[currIdx].attributeID].unit == 's') {
-                                    attributes[dgmTypeAttributes[currIdx].attributeID].value = attributes[dgmTypeAttributes[currIdx].attributeID].value / 1000;
-                                }
+                        /*if (typID == 23913) {
+                            console.log("debug here");
+                        }*/
 
+                        // Process required skills
 
-                                // Required Skills
-                                if (categoryID == 8) {
-                                    const skillID = attributes[dgmTypeAttributes[currIdx].attributeID].value;
-                                    if (skillID > 5) {
-                                        const skill = typeIDs[skillID];
+                        for (const attributeID in attributes) {
 
-                                        attributes[dgmTypeAttributes[currIdx].attributeID].displayName = skill.name.en;
-                                        attributes[dgmTypeAttributes[currIdx].attributeID].value = '';
-                                        attributes[dgmTypeAttributes[currIdx].attributeID].unit = '';
+                            if (attributes[attributeID].categoryID == requiredSkillCategoryID) {
+
+                                const skillID = attributes[attributeID].value;
+                                if (skillID > 5) {
+                                    const skill = typeIDs[skillID];
+                                    switch (attributes[attributeID].attributeID) {
+                                        case requiredSkill1ID:
+                                            attributes[attributeID].value = attributes[requiredSkill1LevelID].value;
+                                            delete attributes[277];
+                                            break;
+                                        case requiredSkill2ID:
+                                            attributes[attributeID].value = attributes[requiredSkill2LevelID].value;
+                                            delete attributes[278];
+                                            break;
+                                        case requiredSkill3ID:
+                                            attributes[attributeID].value = attributes[requiredSkill3LevelID].value;
+                                            delete attributes[279];
+                                            break;
+                                        case requiredSkill4ID:
+                                            attributes[attributeID].value = attributes[requiredSkill4LevelID].value;
+                                            delete attributes[1286];
+                                            break;
+                                        case requiredSkill5ID:
+                                            attributes[attributeID].value = attributes[requiredSkill5LevelID].value;
+                                            delete attributes[1287];
+                                            break;
+                                        case requiredSkill6ID:
+                                            attributes[attributeID].value = attributes[requiredSkill6LevelID].value;
+                                            delete attributes[1288];
+                                            break;
                                     }
-                                    else {
-                                        delete attributes[dgmTypeAttributes[currIdx].attributeID];
-                                        // todo: Get the required lvl for the skill and paste result to the corresponding skill entry (lvl1-lvl5)
-                                    }
-                                }
-
-                                // Damage Multiplier converted to %
-                                if ((dgmTypeAttributes[currIdx].attributeID == 109) ||
-                                    (dgmTypeAttributes[currIdx].attributeID == 110) ||
-                                    (dgmTypeAttributes[currIdx].attributeID == 111) ||
-                                    (dgmTypeAttributes[currIdx].attributeID == 113) ||
-                                    (dgmTypeAttributes[currIdx].attributeID == 267) ||
-                                    (dgmTypeAttributes[currIdx].attributeID == 268) ||
-                                    (dgmTypeAttributes[currIdx].attributeID == 269) ||
-                                    (dgmTypeAttributes[currIdx].attributeID == 270) ||
-                                    (dgmTypeAttributes[currIdx].attributeID == 271) ||
-                                    (dgmTypeAttributes[currIdx].attributeID == 272) ||
-                                    (dgmTypeAttributes[currIdx].attributeID == 273) ||
-                                    (dgmTypeAttributes[currIdx].attributeID == 274)) {
-                                    attributes[dgmTypeAttributes[currIdx].attributeID].value = Math.round((1 - attributes[dgmTypeAttributes[currIdx].attributeID].value) * 100);
+                                    attributes[attributeID].displayName = skill.name.en;
+                                    attributes[attributeID].unit = '';
                                 }
                             }
                         }
@@ -206,7 +262,7 @@ exports.parse = function () {
                         items[typID].catName = catName;
                         items[typID].grpName = grpName;
                         items[typID].typID = typID;
-                        items[typID].typeBonusName = typeBonusName;
+                        items[typID].skillBonusName = skillBonusName;
                         if (currType.raceID) {
                             const raceName = races[currType.raceID].raceName;
                             items[typID].raceName = raceName;
@@ -250,10 +306,6 @@ exports.parse = function () {
             // -------- Process Blueprint
 
             if (catName.includes("Blueprint")) {
-
-                /*if (typID ==24699) {
-                    console.log("debug here");
-                }*/
 
                 if (currType.name.en)   // prevent a YAML error: item Id 48420 doesnt provide an English name
                 {

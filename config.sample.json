@@ -1,7 +1,7 @@
 {
   "token": "your_discord_bot_token",
   "prefix": "/",
-  "bot_normal_mode_permission": 337984,
+  "bot_normal_mode_permission": 354368,
   "wikidomain": "http:\/\/games.chruker.dk\/eve_online\/item.php?type_id=",
   "thumbrooturl": "http:\/\/mydomain.com:8000",
   "eimojis": {
@@ -9,7 +9,7 @@
     "Gallente": "<:Gallente:your_eimoji_token_id>",
     "Minmatar": "<:Minmatar:your_eimoji_token_id>",
     "Amarr": "<:Amarr:your_eimoji_token_id>",
-    "Isk": "<:Isk:your_eimoji_token_id>",
+    "Base_Price": "<:Isk:your_eimoji_token_id>",
     "ORE": "<:ORE:your_eimoji_token_id>",
     "Mass": "<:Mass:your_eimoji_token_id>",
     "Volume": "<:Volume:your_eimoji_token_id>",
@@ -52,7 +52,10 @@
     "Magnetometric_Sensor_Strength": "<:Magnetometric_Sensor_Strength:your_eimoji_token_id>",
     "Gravimetric_Sensor_Strength": "<:Gravimetric_Sensor_Strength:your_eimoji_token_id>",
     "Signature_Radius": "<:Signature_Radius:your_eimoji_token_id>",
-    "Scan_Resolution": "<:Scan_Resolution:your_eimoji_token_id>"
+    "Scan_Resolution": "<:Scan_Resolution:your_eimoji_token_id>",
+    "Inertia_Modifier": "<:Inertia_Modifier:your_eimoji_token_id>",
+    "Maximum_Velocity": "<:Maximum_Velocity:your_eimoji_token_id>",
+    "Ship_Warp_Speed": "<:Ship_Warp_Speed:your_eimoji_token_id>"
   }
 
 }
