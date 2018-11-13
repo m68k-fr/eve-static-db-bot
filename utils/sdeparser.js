@@ -51,6 +51,10 @@ exports.parse = function () {
 
     const iconIDPath = sdePath + 'fsd/iconIDs.yaml';
 
+    const industryActivityProductsPath = sdePath + 'bsd/industryActivityProducts.yaml';
+    const industryActivityPath = sdePath + 'bsd/industryActivity.yaml';
+
+
     try {
 
         // Load Races
@@ -82,6 +86,11 @@ exports.parse = function () {
         // Load Icons
 
         const iconIDs = yaml.safeLoad(fs.readFileSync(iconIDPath, 'utf8'));
+
+        // Load Blueprints
+        const blueprintsPath = sdePath + 'fsd/blueprints.yaml';
+        var blueprints = yaml.safeLoad(fs.readFileSync(blueprintsPath, 'utf8'));
+
 
         // Import Items (Only ships catID=6)
 
@@ -209,10 +218,6 @@ exports.parse = function () {
                             }
                         }
 
-                        /*if (typID == 23913) {
-                            console.log("debug here");
-                        }*/
-
                         // Process required skills
 
                         for (const attributeID in attributes) {
@@ -317,15 +322,50 @@ exports.parse = function () {
                             iconFile = iconFile.split('/').pop().replace(/\.[^/.]+$/, '');
                         }
 
+                        let products = [];
+                        let materials = [];
+                        let skills = [];
+                        let time = '';
+
+                        /*if (typID == 24699) {
+                            console.log("debug here");
+                        }*/
+
+                        if (blueprints[typID]['activities']['manufacturing']) {
+
+                            for (currID in blueprints[typID]['activities']['manufacturing']['products']) {
+                                const productID = blueprints[typID]['activities']['manufacturing']['products'][currID].typeID;
+                                products[productID] = blueprints[typID]['activities']['manufacturing']['products'][currID];
+                                products[productID].name = typeIDs[productID].name.en;
+                            }
+
+                            for (currID in blueprints[typID]['activities']['manufacturing']['materials']) {
+                                const materialID = blueprints[typID]['activities']['manufacturing']['materials'][currID].typeID;
+                                materials[materialID] = blueprints[typID]['activities']['manufacturing']['materials'][currID];
+                                materials[materialID].name = typeIDs[materialID].name.en;
+                            }
+
+                            for (currID in blueprints[typID]['activities']['manufacturing']['skills']) {
+                                const skillID = blueprints[typID]['activities']['manufacturing']['skills'][currID].typeID;
+                                skills[skillID] = blueprints[typID]['activities']['manufacturing']['skills'][currID];
+                                skills[skillID].name = typeIDs[skillID].name.en;;
+                            }
+
+                            time = blueprints[typID]['activities']['manufacturing'].time;
+                        }
+
                         // store Module infos
 
                         items[typID] = currType;
-                        //items[typID].attributes = attributes;
                         items[typID].queryName = currType.name.en;
                         items[typID].catName = catName;
                         items[typID].grpName = grpName;
                         items[typID].typID = typID;
                         items[typID].iconFile = iconFile;
+                        items[typID].products = products;
+                        items[typID].materials = materials;
+                        items[typID].skills = skills;
+                        items[typID].time = time;
                         itemCount.Blueprints++;
 
                     }
@@ -335,7 +375,9 @@ exports.parse = function () {
 
         console.log("Bot is ready, SDE YAML processed: " + itemCount.Ships + " ships, " + itemCount.Modules + " modules, " + itemCount.Blueprints + " blueprints.");
 
-    } catch (e) {
+    }
+    catch (e) {
         console.log(e);
     }
-};
+}
+;

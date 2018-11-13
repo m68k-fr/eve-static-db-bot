@@ -102,7 +102,6 @@ exports.run = (message, config, edItem) => {
     }
 
 
-
     for (var attrIdx in edItem.attributes) {
         const catID = edItem.attributes[attrIdx].categoryID;
 
