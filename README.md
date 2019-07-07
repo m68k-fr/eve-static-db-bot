@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/m68k-fr/eve-static-db-bot.svg?branch=master)](https://travis-ci.org/m68k-fr/eve-static-db-bot)
 [![License](https://img.shields.io/github/license/m68k-fr/eve-static-db-bot.svg)](https://github.com/m68k-fr/eve-static-db-bot/blob/master/LICENSE)
-[![Invite](https://img.shields.io/badge/public--bot-invite-green.svg?logo=discord&longCache=true&style=flat)](https://discordapp.com/oauth2/authorize?&client_id=508365871421325332&scope=bot&permissions=354368)
 
 
 This Discord bot displays EVE Online item infos.
@@ -15,9 +14,6 @@ This Discord bot displays EVE Online item infos.
 ![](https://drive.google.com/uc?export=download&id=1OPxN-ih3rBtDeHmzx5nAFEBAoO2ndnnn)
 
 
-## How do I invite this bot to my Discord server?
-
-If you don't want to mess with the hassle of hosting yourself this bot on a server, just use the public invite button on top of this page.
   
 ## What permissions does this bot require?
 
